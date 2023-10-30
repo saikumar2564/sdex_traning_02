@@ -1,0 +1,43 @@
+table {
+    width: 60%;
+    border: 2px solid #333; /* Add a border property */
+    border-collapse: collapse;
+    margin: auto;
+}
+
+th, td {
+    border: 2px solid #333;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+#container {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+}
+#table-heading{
+    text-align: center;
+}
+@media only screen and (max-width: 600px) {
+    #container {
+      display: grid;
+      grid-template-columns: repeat(1,1fr);
+    }
+  }
+ #form-container{
+    margin: auto;
+    text-align: center;
+ }
