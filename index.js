@@ -108,7 +108,7 @@ const form = document.getElementById("task-form");
 const table = document.querySelector("table");
 let tableBody = document.getElementById("tableBody");
 const url = "https://mock-api-template-q6lp.onrender.com/users";
-
+const updateTaskForm=document.getElementById("update-task-form");
 window.addEventListener("load", () => {
   fetchdata();
 });
@@ -136,6 +136,7 @@ function displaydata(data) {
     const cellTitle = document.createElement("td");
     const cellCompleted = document.createElement("td");
     const cellDelete = document.createElement("td");
+    const cellUpdate =document.createElement("td");
 
     cellUserId.innerHTML = element.userid;
     cellId.innerHTML = element.id;
@@ -143,6 +144,7 @@ function displaydata(data) {
     cellTitle.innerHTML = element.title;
     cellCompleted.innerHTML = element.completed ? true : false;
     cellDelete.textContent = "delete";
+    cellUpdate.textContent ="update";
     cellDelete.style.backgroundColor = "red";
     cellDelete.style.color = "white";
     cellDelete.style.cursor = "pointer";
@@ -155,15 +157,34 @@ function displaydata(data) {
       cellCompleted.style.color = "white";
     }
 
-    cellDelete.addEventListener("click", function () {
+    cellDelete.addEventListener("click", async ()=> {
       const confirmDelete = confirm("Are you sure you want to delete this row?");
       if (confirmDelete) {
-        newRow.remove();
-        // You can also make an API call here to delete the corresponding data on the server.
+        let response=await fetch(url+"/"+`${element.id}`,{method: "DELETE"})
+        console.log(response)
+        fetchdata()
       }
     });
+    cellUpdate.addEventListener('click',async ()=>{
+      const updateId=document.getElementById("updateId");
+      const userid = document.getElementById("updateUserId");
+      const title = document.getElementById("updateTitle");
+      const place = document.getElementById("updatePlace");
+      const completed = document.getElementById("updateCompleted");
+      updateId.value=element.id
+      userid.value=element.userid
+      title.value=element.title
+      place.value=element.place
+      if(element.completed){
+        completed.checked=true
+      }else{
+        completed.checked=false
+      }
+      
 
-    newRow.append(cellUserId, cellId, cellplace, cellTitle, cellCompleted, cellDelete);
+    })
+
+    newRow.append(cellUserId, cellId, cellplace, cellTitle, cellCompleted, cellDelete,cellUpdate);
     tableBody.append(newRow);
   });
 }
@@ -194,6 +215,38 @@ form.addEventListener("submit", function (event) {
       fetchdata();
     });
     alert("user created successfully")
+
+  form.reset();
+});
+// update
+updateTaskForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const updateId=document.getElementById("updateId").value;
+  const userid = document.getElementById("updateUserId").value;
+  const title = document.getElementById("updateTitle").value;
+  const place = document.getElementById("updatePlace").value;
+  const completed = document.getElementById("updateCompleted").checked;
+  let obj = {
+    userid,
+    title,
+    place,
+    completed,
+  };
+  console.log(obj);
+  fetch(url+"/"+`${updateId}`,{
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(obj),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data);
+      fetchdata();
+    });
+    alert("update  successfully")
+  console.log("clicked")
 
   form.reset();
 });
