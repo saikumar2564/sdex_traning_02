@@ -1,34 +1,200 @@
+// const form = document.getElementById("task-form");
+// const table = document.querySelector("table");
+// let tableBody=document.getElementById("tableBody")
+// const url = "https://mock-api-template-q6lp.onrender.com/users";
+// window.addEventListener("load", () => {
+//   fetchdata()
+// });
+// function fetchdata(){
+//   fetch(url)
+//     .then((res) => {
+//       return res.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//       displaydata(data);
+//     });
+// }
+// function displaydata(data) {
+//   tableBody.innerHTML=null
+//   data.forEach((element) => {
+
+//      const newRow = document.createElement("tr")
+
+    
+//     const cellUserId=document.createElement("td")
+//     const cellId=document.createElement("td")
+//     const cellpalce=document.createElement("td")
+//     const cellTitle=document.createElement("td")
+//     const cellCompleted=document.createElement("td")
+//     const cellDelete=document.createElement("td")
+
+
+//     cellUserId.innerHTML = element.userid;
+//     cellId.innerHTML = element.id;
+//     cellpalce.innerHTML = element.place;
+//     cellTitle.innerHTML = element.title;
+//     cellCompleted.innerHTML = element.completed ? true : false;
+//     cellDelete.textContent = "delete";
+//     cellDelete.style.backgroundColor = "red";
+//     cellDelete.style.color = "white";
+//     cellDelete.style.cursor = "pointer";
+//     if (cellCompleted.innerText==="true") {
+//       cellCompleted.style.backgroundColor = "green";
+//       cellCompleted.style.color = "white";
+//     } else {
+//       cellCompleted.style.backgroundColor = "red";
+//       cellCompleted.style.color = "white";
+//     }
+//     newRow.append(cellUserId,cellId,cellpalce,cellTitle,cellCompleted,cellDelete)
+//     tableBody.append(newRow)
+//   });
+// }
+// form.addEventListener("submit", function (event) {
+//   event.preventDefault();
+
+//   const userid = document.getElementById("userId").value;
+//   const title = document.getElementById("title").value;
+//   const place = document.getElementById("place").value;
+//   const completed = document.getElementById("completed").checked;
+//   let obj = {
+//     userid,
+//     title,
+//     place,
+//     completed,
+//   };
+//   fetch(url, {
+//     method: "POST",
+//     headers: { "content-type": "application/json" },
+//     body: JSON.stringify(obj),
+//   })
+//     .then((res) => {
+//       return res.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//       fetchdata()
+//       // displaydata(data);
+//     });
+
+//   // const newRow = table.insertRow();
+
+//   // const cellUserId = newRow.insertCell(0);
+//   // const cellId = newRow.insertCell(1);
+//   // const cellpalce=newRow.insertCell(2)
+//   // const cellTitle = newRow.insertCell(3);
+//   // const cellCompleted = newRow.insertCell(4);
+
+//   // cellUserId.innerHTML = userId;
+//   // cellId.innerHTML = generateRandomId();
+//   // cellpalce.innerHTML=place;
+//   // cellTitle.innerHTML = title;
+//   // cellCompleted.innerHTML = completed ? true : false;
+//   // if(completed){
+//   //   cellCompleted.style.backgroundColor="green";
+//   //   cellCompleted.style.color="white"
+//   // }
+//   // else{
+//   //   cellCompleted.style.backgroundColor="red"
+//   //   cellCompleted.style.color="white"
+//   // }
+
+//   // cellCompleted.className = completed ? "completed-yes" : "completed-no";
+
+//   form.reset();
+// });
+
 const form = document.getElementById("task-form");
 const table = document.querySelector("table");
+let tableBody = document.getElementById("tableBody");
+const url = "https://mock-api-template-q6lp.onrender.com/users";
 
-form.addEventListener("submit", function(event) {
+window.addEventListener("load", () => {
+  fetchdata();
+});
+
+function fetchdata() {
+  fetch(url)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data);
+      displaydata(data);
+    });
+    
+}
+
+function displaydata(data) {
+  tableBody.innerHTML = null;
+  data.forEach((element) => {
+    const newRow = document.createElement("tr");
+
+    const cellUserId = document.createElement("td");
+    const cellId = document.createElement("td");
+    const cellplace = document.createElement("td");
+    const cellTitle = document.createElement("td");
+    const cellCompleted = document.createElement("td");
+    const cellDelete = document.createElement("td");
+
+    cellUserId.innerHTML = element.userid;
+    cellId.innerHTML = element.id;
+    cellplace.innerHTML = element.place;
+    cellTitle.innerHTML = element.title;
+    cellCompleted.innerHTML = element.completed ? true : false;
+    cellDelete.textContent = "delete";
+    cellDelete.style.backgroundColor = "red";
+    cellDelete.style.color = "white";
+    cellDelete.style.cursor = "pointer";
+
+    if (cellCompleted.innerText === "true") {
+      cellCompleted.style.backgroundColor = "green";
+      cellCompleted.style.color = "white";
+    } else {
+      cellCompleted.style.backgroundColor = "red";
+      cellCompleted.style.color = "white";
+    }
+
+    cellDelete.addEventListener("click", function () {
+      const confirmDelete = confirm("Are you sure you want to delete this row?");
+      if (confirmDelete) {
+        newRow.remove();
+        // You can also make an API call here to delete the corresponding data on the server.
+      }
+    });
+
+    newRow.append(cellUserId, cellId, cellplace, cellTitle, cellCompleted, cellDelete);
+    tableBody.append(newRow);
+  });
+}
+
+form.addEventListener("submit", function (event) {
   event.preventDefault();
 
-  const userId = document.getElementById("userId").value;
+  const userid = document.getElementById("userId").value;
   const title = document.getElementById("title").value;
+  const place = document.getElementById("place").value;
   const completed = document.getElementById("completed").checked;
-
-  const newRow = table.insertRow();
-
-  const cellUserId = newRow.insertCell(0);
-  const cellId = newRow.insertCell(1);
-  const cellTitle = newRow.insertCell(2);
-  const cellCompleted = newRow.insertCell(3);
-
-  cellUserId.innerHTML = userId;
-  cellId.innerHTML = generateRandomId();
-  cellTitle.innerHTML = title;
-  cellCompleted.innerHTML = completed ? "Yes" : "No";
-  
-  // Change the font color based on the checkbox state
-  cellCompleted.className = completed ? "completed-yes" : "completed-no";
+  let obj = {
+    userid,
+    title,
+    place,
+    completed,
+  };
+  fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(obj),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data);
+      fetchdata();
+    });
+    alert("user created successfully")
 
   form.reset();
 });
 
-function generateRandomId() {
-    const min = 10;
-    const max = 99;
-    const randomId = Math.floor(Math.random() * (max - min + 1)) + min;
-    return randomId;
-}
