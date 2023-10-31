@@ -4,30 +4,63 @@ const table = document.querySelector("table");
 let tableBody = document.getElementById("tableBody");
 const url = "https://mock-api-template-q6lp.onrender.com/users";
 const updateTaskForm=document.getElementById("update-task-form");
+const pageWrapper=document.getElementById("page-wrapper")
 window.addEventListener("load", () => {
   fetchdata();
 });
 
 function fetchdata() {
-  fetch(url)
+  fetch(`${url}?_page=${1}&_limit=20`)
     .then((res) => {
+      const totalUsers = res.headers.get("X-Total-Count")
+      const availablePages = Math.ceil(totalUsers/20);
+      createButtons(availablePages);
       return res.json();
     })
     .then((data) => {
-      console.log(data);
+      // console.log(data); 
       displaydata(data);
     });
     
 }
 
-function displaydata(data) {
+function fetchDataOnClick(page=1){
+  fetch(`${url}?_page=${page}&_limit=20`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      displaydata(data);
+    });
+}
+
+function createButtons(pagesLength){
+
+  const pages = []
+
+  for(let i=1; i<=pagesLength; i++)
+  {
+    pages.push(`<button class="page-btn" data-id=${i}>${i}</button>`);
+  }
+  pageWrapper.innerHTML=pages.join("")
+  
+  const pagebtn=document.getElementsByClassName("page-btn")
+
+  for(let i of pagebtn){
+    i.addEventListener("click",(e) => {
+      fetchDataOnClick(e.target.dataset.id)
+      console.log(e.target.dataset.id)
+    })
+  }
+}
+
+function displaydata(data) { 
   tableBody.innerHTML = null;
   data.forEach((element) => {
     const newRow = document.createElement("tr");
 
     const cellUserId = document.createElement("td");
     const cellId = document.createElement("td");
-    const cellplace = document.createElement("td");
     const cellTitle = document.createElement("td");
     const cellCompleted = document.createElement("td");
     const cellDelete = document.createElement("td");
@@ -35,7 +68,6 @@ function displaydata(data) {
 
     cellUserId.innerHTML = element.userid;
     cellId.innerHTML = element.id;
-    cellplace.innerHTML = element.place;
     cellTitle.innerHTML = element.title;
     cellCompleted.innerHTML = element.completed ? true : false;
     cellDelete.textContent = "delete";
@@ -64,7 +96,6 @@ function displaydata(data) {
       const updateId=document.getElementById("updateId");
       const userid = document.getElementById("updateUserId");
       const title = document.getElementById("updateTitle");
-      const place = document.getElementById("updatePlace");
       const completed = document.getElementById("updateCompleted");
       updateId.value=element.id
       userid.value=element.userid
@@ -75,11 +106,9 @@ function displaydata(data) {
       }else{
         completed.checked=false
       }
-      
-
     })
 
-    newRow.append(cellUserId, cellId, cellplace, cellTitle, cellCompleted, cellDelete,cellUpdate);
+    newRow.append(cellUserId, cellId,cellTitle, cellCompleted, cellDelete,cellUpdate);
     tableBody.append(newRow);
   });
 }
@@ -89,12 +118,10 @@ form.addEventListener("submit", function (event) {
 
   const userid = document.getElementById("userId").value;
   const title = document.getElementById("title").value;
-  const place = document.getElementById("place").value;
   const completed = document.getElementById("completed").checked;
   let obj = {
     userid,
     title,
-    place,
     completed,
   };
   fetch(url, {
@@ -119,12 +146,10 @@ updateTaskForm.addEventListener("submit", function (event) {
   const updateId=document.getElementById("updateId").value;
   const userid = document.getElementById("updateUserId").value;
   const title = document.getElementById("updateTitle").value;
-  const place = document.getElementById("updatePlace").value;
   const completed = document.getElementById("updateCompleted").checked;
   let obj = {
     userid,
     title,
-    place,
     completed,
   };
   console.log(obj);
@@ -145,4 +170,5 @@ updateTaskForm.addEventListener("submit", function (event) {
 
   form.reset();
 });
+
 
