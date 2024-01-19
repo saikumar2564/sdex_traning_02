@@ -2,7 +2,7 @@
 const form = document.getElementById("task-form");
 const table = document.querySelector("table");
 let tableBody = document.getElementById("tableBody");
-const url = "https://mock-api-template-q6lp.onrender.com/users";
+const url = "https://mock-api-template2-qp8w.onrender.com/users";
 const updateTaskForm=document.getElementById("update-task-form");
 const pageWrapper=document.getElementById("page-wrapper")
 window.addEventListener("load", () => {
